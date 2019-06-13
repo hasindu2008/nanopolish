@@ -122,7 +122,7 @@ class SquiggleRead
         // Access to data
         //
 
-        // Return the duration of the specified event for one strand
+        // Return the event length
         inline size_t get_event_length(uint32_t event_idx, uint32_t strand_idx) const
         {
             assert(event_idx < events[strand_idx].size());
