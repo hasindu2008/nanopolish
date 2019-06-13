@@ -228,7 +228,7 @@ void emit_tsv_header(FILE* fp)
 {
     fprintf(fp, "%s\t%s\t%s\t%s\t%s\t", "contig", "position", "reference_kmer",
             (not opt::print_read_names? "read_index" : "read_name"), "strand");
-    fprintf(fp, "%s\t%s\t%s\t%s\t", "event_index", "event_level_mean", "event_stdv", "event_length");
+    fprintf(fp, "%s\t%s\t%s\t%s\t%s\t", "event_index", "event_level_mean", "event_stdv", "event_length", "event_duration");
     fprintf(fp, "%s\t%s\t%s\t%s", "model_kmer", "model_mean", "model_stdv", "standardized_level");
 
     if(opt::write_signal_index) {
@@ -431,6 +431,7 @@ void emit_event_alignment_tsv(FILE* fp,
         // event information
         float event_mean = sr.get_unscaled_level(ea.event_idx, ea.strand_idx);
         float event_stdv = sr.get_stdv(ea.event_idx, ea.strand_idx);
+        size_t event_length = sr.get_event_length(ea.event_idx, ea.strand_idx);
         float event_duration = sr.get_duration(ea.event_idx, ea.strand_idx);
         uint32_t rank = pore_model->pmalphabet->kmer_rank(ea.model_kmer.c_str(), k);
         float model_mean = 0.0;
@@ -458,7 +459,7 @@ void emit_event_alignment_tsv(FILE* fp,
         }
 
         float standard_level = (event_mean - model_mean) / (sqrt(sr.scalings[ea.strand_idx].var) * model_stdv);
-        fprintf(fp, "%d\t%.2lf\t%.3lf\t%.5lf\t", ea.event_idx, event_mean, event_stdv, event_duration);
+        fprintf(fp, "%d\t%.2lf\t%.3lf\t%d\t%.5lf\t", ea.event_idx, event_mean, event_stdv, event_length,event_duration);
         fprintf(fp, "%s\t%.2lf\t%.2lf\t%.2lf", ea.model_kmer.c_str(),
                                                model_mean,
                                                model_stdv,
