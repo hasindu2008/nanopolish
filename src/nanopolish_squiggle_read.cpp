@@ -321,7 +321,6 @@ void SquiggleRead::load_from_raw(fast5_file& f5_file, const uint32_t flags)
     assert(rt.n > 0);
     assert(et.n > 0);
 
-    //
     this->scalings[strand_idx] = estimate_scalings_using_mom(this->read_sequence,
                                                              *this->base_model[strand_idx],
                                                              et);
@@ -358,6 +357,12 @@ void SquiggleRead::load_from_raw(fast5_file& f5_file, const uint32_t flags)
     // align events to the basecalled read
     std::vector<AlignedPair> event_alignment = adaptive_banded_simple_event_align(*this, *this->base_model[strand_idx], read_sequence);
 
+    //hm debug
+    // fprintf(stderr,"n_events : %d\n",event_alignment.size());
+    // for (int j = 0; j < event_alignment.size(); ++j) {
+    //     fprintf(stderr, "%d-%d\n",event_alignment[j].ref_pos,event_alignment[j].read_pos);
+    // }   
+
     // transform alignment into the base-to-event map
     if(event_alignment.size() > 0) {
 
@@ -386,6 +391,11 @@ void SquiggleRead::load_from_raw(fast5_file& f5_file, const uint32_t flags)
             min_event = std::min(min_event, event_idx);
             prev_event_idx = event_idx;
         }
+
+        //hm debug
+        // for (int i = 0; i < this->base_to_event_map.size(); ++i) {
+        //     fprintf(stderr,"base_to_event_map - start %d stop %d\n", this->base_to_event_map[i].indices[0].start,this->base_to_event_map[i].indices[0].stop);
+        // }        
 
         events_per_base[strand_idx] = (double)(max_event - min_event) / n_kmers;
 
