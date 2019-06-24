@@ -120,6 +120,18 @@ class SquiggleRead
         //
         // Access to data
         //
+        // Return the event length
+        inline size_t get_event_length(uint32_t event_idx, uint32_t strand_idx) const
+        {
+            assert(event_idx < events[strand_idx].size());
+            double event_start_time = this->events[strand_idx][event_idx].start_time;
+            double event_duration = this->events[strand_idx][event_idx].duration;
+
+            size_t start_idx = this->get_sample_index_at_time(event_start_time * this->sample_rate);
+            size_t end_idx = this->get_sample_index_at_time((event_start_time + event_duration) * this->sample_rate);
+
+            return end_idx - start_idx;
+        }
 
         // Return the duration of the specified event for one strand
         inline float get_duration(uint32_t event_idx, uint32_t strand) const
